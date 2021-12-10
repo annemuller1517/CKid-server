@@ -1,11 +1,14 @@
-const Country = require("../models/Country.model");
+
 
 const router = require("express").Router();
+const Country = require("../models/Country.model");
 
-router.get("/country/:lat/:lon", (req, res, next) => {
-    const {lat, lon} = req.params
+router.post("/country", (req, res, next) => {
+    console.log("heeyy")
+    const {country, city, lat, lon} = req.body
+    let userId = req.session.loggedInUser._id
 
-    Country.create({lat, lon})
+    Country.create({userId, country, city, lat, lon})
     .then((response) => {
         res.status(200).json(response)
    })
