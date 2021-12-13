@@ -10,7 +10,6 @@ const Country = require("../models/Country.model");
 
 router.post('/signup', (req, res) => {
     const {username, email, password } = req.body;
-    console.log(username, email, password);
  
     // -----SERVER SIDE VALIDATION ----------
     

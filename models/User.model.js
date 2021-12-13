@@ -1,5 +1,5 @@
 const { Schema, model } = require("mongoose");
-
+require('./Country.model');
 // 1. Define your schema
 let UserSchema = new Schema({
   username: {
