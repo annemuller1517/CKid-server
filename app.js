@@ -55,6 +55,9 @@ app.use("/api", profileRoutes);
 const detailRoutes = require("./routes/details.routes");
 app.use("/api", detailRoutes);
 
+const fileUploadRoutes = require('./routes/file-upload.routes')
+app.use("/api", fileUploadRoutes);
+
 app.use((req, res, next) => {
 	// If no routes match, send them the React HTML.
 	res.sendFile(__dirname + "/public/index.html");

@@ -9,7 +9,7 @@ const UserModel = require('../models/User.model');
 const Country = require("../models/Country.model");
 
 router.post('/signup', (req, res) => {
-    const {username, email, password } = req.body;
+    const {username, email, password, image} = req.body;
  
     // -----SERVER SIDE VALIDATION ----------
     
@@ -39,7 +39,7 @@ router.post('/signup', (req, res) => {
     // creating a salt 
     let salt = bcrypt.genSaltSync(10);
     let hash = bcrypt.hashSync(password, salt);
-    UserModel.create({username, email, passwordHash: hash})
+    UserModel.create({username, email, passwordHash: hash, image})
       .then((user) => {
         // ensuring that we don't share the hash as well with the user
         user.passwordHash = "***";

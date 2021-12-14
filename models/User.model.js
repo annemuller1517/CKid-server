@@ -15,10 +15,7 @@ let UserSchema = new Schema({
     required: true
   },
   profileImg: String,
-  placesVisited: [{
-    type: Schema.Types.ObjectId,
-    ref: "Country"
-  }]
+  image: String,       
 })
 
 // 2. Define your model
