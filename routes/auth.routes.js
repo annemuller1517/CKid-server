@@ -16,21 +16,21 @@ router.post('/signup', (req, res) => {
     if (!username || !email || !password) {
         res.status(500)
           .json({
-            errorMessage: 'Please enter username, email and password'
+            error: 'Please enter username, email and password'
           });
         return;  
     }
     const myRegex = new RegExp(/^[a-z0-9](?!.*?[^\na-z0-9]{2})[^\s@]+@[^\s@]+\.[^\s@]+[a-z0-9]$/);
     if (!myRegex.test(email)) {
         res.status(500).json({
-          errorMessage: 'Email format not correct'
+          error: 'Email format not correct'
         });
         return;  
     }
     const myPassRegex = new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/);
     if (!myPassRegex.test(password)) {
       res.status(500).json({
-        errorMessage: 'Password needs to have 8 characters, a number and an Uppercase alphabet'
+        error: 'Password needs to have 8 characters, a number and an Uppercase alphabet'
       });
       return;  
     }
@@ -48,25 +48,81 @@ router.post('/signup', (req, res) => {
       .catch((err) => {
         if (err.code === 11000) {
           res.status(500).json({
-            errorMessage: 'username or email entered already exists!',
+            error: 'username or email entered already exists!',
             message: err,
           });
         } 
         else {
           res.status(500).json({
-            errorMessage: 'Something went wrong! Go to sleep!',
+            error: 'Something went wrong! Go to sleep!',
             message: err,
           });
         }
       })
 });
  
+
+
+
+router.patch('/edit', (req, res) => {
+    const {username, email, password, image} = req.body;
+ 
+    // -----SERVER SIDE VALIDATION ----------
+    
+    if (!username || !email || !password) {
+        res.status(500)
+          .json({
+            error: 'Please enter username, email and password'
+          });
+        return;  
+    }
+    const myRegex = new RegExp(/^[a-z0-9](?!.*?[^\na-z0-9]{2})[^\s@]+@[^\s@]+\.[^\s@]+[a-z0-9]$/);
+    if (!myRegex.test(email)) {
+        res.status(500).json({
+          error: 'Email format not correct'
+        });
+        return;  
+    }
+    const myPassRegex = new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/);
+    if (!myPassRegex.test(password)) {
+      res.status(500).json({
+        error: 'Password needs to have 8 characters, a number and an Uppercase alphabet'
+      });
+      return;  
+    }
+
+    // NOTE: We have used the Sync methods here. 
+    // creating a salt 
+    let salt = bcrypt.genSaltSync(10);
+    let hash = bcrypt.hashSync(password, salt);
+    let id = req.session.loggedInUser._id
+    UserModel.findByIdAndUpdate(id, {username, email, passwordHash: hash, image})
+      .then((user) => {
+        // ensuring that we don't share the hash as well with the user
+        user.passwordHash = "***";
+        res.status(200).json(user);
+      })
+      .catch((err) => {
+        if (err.code === 11000) {
+          res.status(500).json({
+            error: 'username or email entered already exists!',
+            message: err,
+          });
+        } 
+        else {
+          res.status(500).json({
+            error: 'Something went wrong! Go to sleep!',
+            message: err,
+          });
+        }
+      })
+});
 // will handle all POST requests to http:localhost:5005/api/signin
 router.post('/signin', (req, res) => {
     const {email, password } = req.body;
 
     // -----SERVER SIDE VALIDATION ----------
-    /*
+    
     if ( !email || !password) {
         res.status(500).json({
             error: 'Please enter Username. email and password',
@@ -80,7 +136,7 @@ router.post('/signin', (req, res) => {
         })
         return;  
     }
-    */
+    
 
     // Find if the user exists in the database 
     UserModel.findOne({email})

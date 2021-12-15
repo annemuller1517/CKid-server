@@ -10,14 +10,21 @@ router.post("/country", (req, res, next) => {
     const {country, city, lat, lon} = req.body
     let userId = req.session.loggedInUser._id
 
+    if (!country || !city) {
+        res.status(500)
+          .json({
+            error: 'Please enter country and a city'
+          });
+        return;  
+    }
+
     Country.create({userId, country, city, lat, lon})
     .then((response) => {
         res.status(200).json(response)
    })
    .catch((err) => {
         res.status(500).json({
-             error: 'Something went wrong',
-             message: err
+             error: 'City and Country are not in the same place'
         })
    })  
 

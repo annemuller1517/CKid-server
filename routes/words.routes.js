@@ -6,7 +6,16 @@ router.post("/:city/wordlist", (req, res, next) => {
     let userId = req.session.loggedInUser._id
     let city = req.params
     let countryId=  ""
-    console.log(userId)
+
+    console.log(req.body[0].word, req.body[0].translation,)
+
+    if (!req.body[0].word.length|| !req.body[0].translation) {
+        res.status(500)
+          .json({
+            error: 'Please enter a word and translation'
+          });
+        return;  
+    }
 
             Country.find(city)
             .then((response)=> {
@@ -16,7 +25,7 @@ router.post("/:city/wordlist", (req, res, next) => {
                 countryId = filteredArray[0]._id
                 Country.findByIdAndUpdate(countryId,  {$push: {words:req.body}})
                 .then((response)=> {
-                    console.log(response)
+                    res.status(200).json(response)
                 })  
             })
             .catch((err)=> {
@@ -74,7 +83,7 @@ router.patch("/:city/wordlist", (req, res, next) => {
                 countryId = filteredArray[0]._id
                 Country.findByIdAndUpdate(countryId,  {$set: {words:req.body}})
                 .then((response)=> {
-                    console.log("RESPONSE", response)
+                    res.status(200).json(response)
                 })  
             })
             .catch((err)=> {
