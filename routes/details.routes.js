@@ -3,8 +3,6 @@ const Country = require("../models/Country.model");
 
 router.get("/:country/:city/:lat/:lon/details", (req, res, next) => {
         let {country, city, lat, lon} = req.params
-        console.log(city)
-    
     
     Country.findOne({city})
     .then((response)=> {
