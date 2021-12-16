@@ -6,7 +6,7 @@ const UserModel = require("../models/User.model");
 
 
 router.post("/country", (req, res, next) => {
-    console.log("heeyy")
+    
     const {country, city, lat, lon} = req.body
     let userId = req.session.loggedInUser._id
 
